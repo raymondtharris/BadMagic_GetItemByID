@@ -1,0 +1,29 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run a multi-line script
+      run:
+        ls -la
+    - name: Create Zip File
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip  -r ./index.zip ./index.js
+    - name: Run single line script
+      run: 
+        ls -la    
+    - name: AWS Update Lambda Action
+      uses: stcalica/update-lambda@0.0.2
+      with:
+        package: index.zip
+        function-name: badmagicGetShopItemByID
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
+        AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
